@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+  <title>Quicklearn</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="personal-info"></div>
+  <div id="language-partners"></div>
+
+  <script id="personal-info-template" type="text/x-handlebars-template">
+    {{#if open}}
+      <form method="post" class="edit-info">
+        <input name="name" placeholder="Your Name" value="{{name}}" maxlength="30">
+        <input name="country" placeholder="Your Country" value="{{country}}" maxlength="30">
+        <input name="speaks" placeholder="Language You Speak" value="{{speaks}}" maxlength="30">
+        <input name="learning" placeholder="Language You're Learning" value="{{learning}}" maxlength="30">
+        <button type="submit">Done</button>
+        <button class="cancel-button">Cancel</button>
+      </form>
+    {{else}}
+      <button class="edit-info">Edit Profile</button>
+    {{/if}}
+  </script>
+  <script id="language-partner-template" type="text/x-handlebars-template">
+    <div class="row">
+      <div class="col-md-3">{{name}}</div>
+      <div class="col-md-3">{{country}}</div>
+      <div class="col-md-3">{{speaks}}</div>
+      <div class="col-md-3">{{learning}}</div>
+    </div>
+  </script>
+  <script src="quick-learn.js"></script>
+</body>
+</html>
