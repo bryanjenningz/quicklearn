@@ -1,36 +1,99 @@
 <!doctype html>
 <html>
-<head>
-  <title>Quicklearn</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css">
-  <link rel="stylesheet" href="styles.css">
-</head>
+<head></head>
 <body>
-  <div id="personal-info"></div>
-  <div id="language-partners"></div>
-
-  <script id="personal-info-template" type="text/x-handlebars-template">
+  <div id="info-container"></div>
+  <div id="users-container"></div>
+  <ul id="messages"></ul>
+  <form action="">
+    <input id="m" autocomplete="off" /><button>Send</button>
+  </form>
+  
+  <script id="info-template" type="text/x-handlebars-template">
     {{#if open}}
-      <form method="post" class="edit-info">
-        <input name="name" placeholder="Your Name" value="{{name}}" maxlength="30">
-        <input name="country" placeholder="Your Country" value="{{country}}" maxlength="30">
-        <input name="speaks" placeholder="Language You Speak" value="{{speaks}}" maxlength="30">
-        <input name="learning" placeholder="Language You're Learning" value="{{learning}}" maxlength="30">
-        <button type="submit">Done</button>
-        <button class="cancel-button">Cancel</button>
-      </form>
+      <div>Enter your info</div>
+      <input class="name" placeholder="Name" value="{{name}}" maxlength="30">
+      <input class="country" placeholder="Country" value="{{country}}" maxlength="30">
+      <input class="speaks" placeholder="Speaks" value="{{speaks}}" maxlength="30">
+      <input class="learns" placeholder="Learning" value="{{learns}}" maxlength="30">
+      <button class="update-info">Done</button>
     {{else}}
-      <button class="edit-info">Edit Profile</button>
+      <div>Hello{{#if name}}, {{name}}{{/if}}!</div>
+      <button class="edit-info">Edit info</button>
     {{/if}}
   </script>
-  <script id="language-partner-template" type="text/x-handlebars-template">
-    <div class="row">
-      <div class="col-md-3">{{name}}</div>
-      <div class="col-md-3">{{country}}</div>
-      <div class="col-md-3">{{speaks}}</div>
-      <div class="col-md-3">{{learning}}</div>
-    </div>
+  <script id="user-template" type="text/x-handlebars-template">
+    <tr class="user">
+      <td class="name">{{name}}</td>
+      <td class="country">{{country}}</td>
+      <td class="speaks">{{speaks}}</td>
+      <td class="learns">{{learns}}</td>
+    </tr>
   </script>
-  <script src="quick-learn.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+  <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+  
+  <script>
+    var socket = io();
+    $('form').submit(function(){
+      socket.emit('chat message', $('#m').val());
+      $('#m').val('');
+      return false;
+    });
+    socket.on('chat message', function(msg){
+      $('#messages').append($('<li>').text(msg));
+    });
+  </script>
+
+  <script>
+    var info = (function($container) {
+      var state = initState() || {name: null, country: null, speaks: null, learns: null, open: true};
+      var template = Handlebars.compile($('#info-template').html());
+      $container.on('click', '.update-info', updateInfo);
+      $container.on('click', '.edit-info', editInfo);
+
+      function updateInfo() { 
+        var name = $container.find('.name').val();
+        var country = $container.find('.country').val();
+        var speaks = $container.find('.speaks').val();
+        var learns = $container.find('.learns').val();
+        if (name && country && speaks && learns) {
+          state.name = name; state.country = country; state.speaks = speaks; state.learns = learns;
+          state.open = false;
+          localStorage.setItem('info', JSON.stringify(state));
+          render();
+        }
+      }
+      function editInfo() {
+        state.open = true;
+        render();
+      }
+      function initState() {
+        return JSON.parse(localStorage.getItem('info'));
+      }
+      function render() {
+        $container.html(template(state));
+      }
+      render();
+
+      return {state: state};
+    })($('#info-container'));
+
+
+    var users = (function($container) {
+      var state = [];
+      var userTemplate = Handlebars.compile($('#user-template').html());
+      function render() {
+        $container.html('');
+        state.forEach(function(user) {
+          $container.append($(userTemplate(user)));
+        });
+      }
+      render();
+      return {state: state};
+    })($('#users-container'));
+  </script>
 </body>
 </html>

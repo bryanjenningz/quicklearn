@@ -13,8 +13,13 @@ var personalInfo = (function($container) {
     $container.html(template(state));
   };
 
-  var toggleView = function() {
-    state.open = !state.open;
+  var closeView = function() {
+    state.open = false;
+    render();
+  };
+
+  var openView = function() {
+    state.open = true;
     render();
   };
 
@@ -25,9 +30,11 @@ var personalInfo = (function($container) {
     state.learning = $container.find('[name=learning]').val();
   };
 
-  $container.on('button.edit-info', 'click', toggleView);
-  $container.on('button.cancel-button', 'click', toggleView);
-  $container.on('form', 'submit', function() { updateInfo(); toggleView(); });
+  $container.on('click', 'button.edit-info', openView);
+  $container.on('click', 'button.cancel-button', closeView);
+  $container.on('submit', 'form', function() { updateInfo(); closeView(); });
+
+  render();
 
   return {
     updateInfo: updateInfo,
@@ -42,12 +49,12 @@ var languagePartners = (function($container) {
     partners: []
   };
 
-  var template = Handlebars.compile($('#language-partners-template').html());
+  var template = Handlebars.compile($('#language-partner-template').html());
 
   var render = function() {
     $container.html('');
     state.partners.forEach(function(partner) {
       $container.append($(template(partner)));
     });
-  }
+  };
 })($('#language-partners'));
