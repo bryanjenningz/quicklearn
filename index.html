@@ -1,6 +1,8 @@
 <!doctype html>
 <html>
-<head></head>
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css">
+</head>
 <body>
   <div id="info-container"></div>
   <div id="users-container"></div>
@@ -48,7 +50,7 @@
   </script>
 
   <script>
-    var info = (function($container) {
+    var info = (function($container, socket) {
       var state = initState() || {name: null, country: null, speaks: null, learns: null, open: true};
       var template = Handlebars.compile($('#info-template').html());
       $container.on('click', '.update-info', updateInfo);
@@ -63,6 +65,7 @@
           state.name = name; state.country = country; state.speaks = speaks; state.learns = learns;
           state.open = false;
           localStorage.setItem('info', JSON.stringify(state));
+          socket.emit('update info', {name: state.name, country: state.country, speaks: state.speaks, learns: state.learns});
           render();
         }
       }
@@ -79,12 +82,24 @@
       render();
 
       return {state: state};
-    })($('#info-container'));
+    })($('#info-container'), socket);
 
 
-    var users = (function($container) {
-      var state = [];
+    var users = (function($container, socket) {
+      var state = [
+        {name: 'Name1', country: 'Country1', speaks: 'Speaks1', learns: 'Learns1'},
+        {name: 'Name2', country: 'Country2', speaks: 'Speaks2', learns: 'Learns2'},
+        {name: 'Name3', country: 'Country3', speaks: 'Speaks3', learns: 'Learns3'},
+      ];
       var userTemplate = Handlebars.compile($('#user-template').html());
+      socket.on('update users', updateUsers);
+      function updateUsers(users) {
+        state = [];
+        Object.keys(users).forEach(function(id) {
+          state.push(users[id]);
+        });
+        render();
+      }
       function render() {
         $container.html('');
         state.forEach(function(user) {
@@ -93,7 +108,7 @@
       }
       render();
       return {state: state};
-    })($('#users-container'));
+    })($('#users-container'), socket);
   </script>
 </body>
 </html>
