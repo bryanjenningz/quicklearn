@@ -13,16 +13,28 @@
       display: block;
       margin: 0 auto;
     }
-    .user td, .user thead {
-      display: inline-block;
+    .user td {
+      background-color: #eef;
+      border: 1px solid;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
   <div id="app">
     <div id="info-container"></div>
+    <div id="users-container-header">
+      <tr class="user">
+        <td class="col-md-3">Name</td>
+        <td class="col-md-3">Country</td>
+        <td class="col-md-3">Speaks</td>
+        <td class="col-md-3">Learning</td>
+      </tr>
+    </div>
     <div id="users-container"></div>
-    <ul id="messages"></ul>
+    <div id="main-messages-container">
+      <ul id="messages"></ul>
+    </div>
     <form action="">
       <input id="m" autocomplete="off" /><button>Send</button>
     </form>
@@ -43,10 +55,9 @@
   </script>
   <script id="user-template" type="text/x-handlebars-template">
     <tr class="user">
-      <td class="name">{{name}}</td>
-      <td class="country">{{country}}</td>
-      <td class="speaks">{{speaks}}</td>
-      <td class="learns">{{learns}}</td>
+      <td class="name col-md-3">{{name}}</td>
+      <td class="country col-md-3">{{country}}</td>
+      <td class="speaks col-md-3">{{speaks}}</td> <td class="learns col-md-3">{{learns}}</td>
     </tr>
   </script>
 
