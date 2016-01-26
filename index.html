@@ -4,6 +4,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css">
   <style>
+    * {
+      box-sizing: border-box;
+    }
     #app {
       width: 800px;
       margin: 0 auto;
@@ -17,6 +20,14 @@
       background-color: #eef;
       border: 1px solid;
       cursor: pointer;
+    }
+    #messages {
+      text-align: left;
+      width: 400px;
+      height: 300px;
+      margin: 0 auto;
+      padding: 5px 20px;
+      background-color: #eee;
     }
   </style>
 </head>
@@ -68,12 +79,12 @@
   <script>
     var socket = io();
     $('form').submit(function(){
-      socket.emit('chat message', $('#m').val());
+      socket.emit('chat message', {name: info.state.name, text: $('#m').val()});
       $('#m').val('');
       return false;
     });
     socket.on('chat message', function(msg) {
-      $('#messages').append($('<li>').text(msg));
+      $('#messages').append($('<div class="message"><span class="author">' + msg.name + '</span>: <span>' + msg.text + '</span>'));
     });
   </script>
 
