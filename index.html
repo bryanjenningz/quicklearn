@@ -1,15 +1,32 @@
 <!doctype html>
 <html>
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css">
+  <style>
+    #app {
+      width: 800px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .user {
+      display: block;
+      margin: 0 auto;
+    }
+    .user td, .user thead {
+      display: inline-block;
+    }
+  </style>
 </head>
 <body>
-  <div id="info-container"></div>
-  <div id="users-container"></div>
-  <ul id="messages"></ul>
-  <form action="">
-    <input id="m" autocomplete="off" /><button>Send</button>
-  </form>
+  <div id="app">
+    <div id="info-container"></div>
+    <div id="users-container"></div>
+    <ul id="messages"></ul>
+    <form action="">
+      <input id="m" autocomplete="off" /><button>Send</button>
+    </form>
+  </div>
   
   <script id="info-template" type="text/x-handlebars-template">
     {{#if open}}
