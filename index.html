@@ -28,6 +28,11 @@
       margin: 0 auto;
       padding: 5px 20px;
       background-color: #eee;
+      overflow-y: auto;
+      word-break: break-word;
+    }
+    .message .text {
+      cursor: pointer;
     }
   </style>
 </head>
@@ -47,7 +52,7 @@
       <ul id="messages"></ul>
     </div>
     <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
+      <input id="m" autocomplete="off" maxlength="400"><button>Send</button>
     </form>
   </div>
   
@@ -73,7 +78,7 @@
   </script>
   <script id="message-template" type="text/x-handlebars-template">
     <div class="message">
-      <span class="author">{{name}}</span>: <span>{{text}}</span>
+      <span class="author">{{name}}</span>: <span class="text">{{text}}</span>
     </div>
   </script>
 
@@ -84,13 +89,18 @@
   <script>
     var socket = io();
     $('form').submit(function(){
-      socket.emit('chat message', {name: info.state.name, text: $('#m').val()});
-      $('#m').val('');
+      var text = $('#m').val();
+      if (text.length > 0) {
+        socket.emit('chat message', {name: info.state.name, text: text});
+        $('#m').val('');
+      }
       return false;
     });
-    var messageTemplate = Handlebars.compile($('#message-template').html());
+    var messagetemplate = Handlebars.compile($('#message-template').html());
     socket.on('chat message', function(msg) {
-      $('#messages').append(messageTemplate(msg));
+      var $messages = $('#messages');
+      $messages.append(messagetemplate(msg));
+      $messages.scrollTop(1000);
     });
   </script>
 
