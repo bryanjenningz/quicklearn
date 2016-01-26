@@ -71,6 +71,11 @@
       <td class="speaks col-md-3">{{speaks}}</td> <td class="learns col-md-3">{{learns}}</td>
     </tr>
   </script>
+  <script id="message-template" type="text/x-handlebars-template">
+    <div class="message">
+      <span class="author">{{name}}</span>: <span>{{text}}</span>
+    </div>
+  </script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
@@ -83,8 +88,9 @@
       $('#m').val('');
       return false;
     });
+    var messageTemplate = Handlebars.compile($('#message-template').html());
     socket.on('chat message', function(msg) {
-      $('#messages').append($('<div class="message"><span class="author">' + msg.name + '</span>: <span>' + msg.text + '</span>'));
+      $('#messages').append(messageTemplate(msg));
     });
   </script>
 
